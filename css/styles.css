@@ -1,5 +1,6 @@
 /* Set margin, flex properties, height, and background color for the body */
 body {
+    background-image: url("/resources/images/background/desert png.jpg");
     margin: 0;
     display: flex;
     justify-content: center;
