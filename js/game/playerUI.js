@@ -9,7 +9,8 @@ class PlayerUI extends GameObject {
 
     // Create a new UI component with initial text and add it to this object's components.
     this.uiComponent = new UI('Lives: 3 Score: 0', x, y);
-    this.addComponent(this.uiComponent);
+    this.addComponent(this.uiComponent); 
+    
   }
 
   // The update method is called every frame.

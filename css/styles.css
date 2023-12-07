@@ -2,14 +2,13 @@
 body {
     background-image: url("/resources/images/background/desert png.jpg");
     margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #ff0000; /* Red background color */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 /* Add border to the canvas element */
 canvas {
-    border: 1px solid #fff; /* 1 pixel solid white border */
+    border: 23px solid transparent;
+    border-image: url("/resources/images/background/gold border.jpg") 20% round;
 }
