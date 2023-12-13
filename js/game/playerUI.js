@@ -9,8 +9,7 @@ class PlayerUI extends GameObject {
 
     // Create a new UI component with initial text and add it to this object's components.
     this.uiComponent = new UI('Lives: 3 Score: 0', x, y);
-    this.addComponent(this.uiComponent); 
-    
+    this.addComponent(this.uiComponent);
   }
 
   // The update method is called every frame.
@@ -19,7 +18,7 @@ class PlayerUI extends GameObject {
     const player = this.game.gameObjects.find((obj) => obj instanceof Player);
 
     // Update the text of the UI component to reflect the player's current lives and score.
-    this.uiComponent.setText(`Lives: ${player.lives} Score: ${player.score} Peter Griffin Mode (FALSE)`);
+    this.uiComponent.setText(`Lives: ${player.lives} Score: ${player.score}`);
   }
 }
 
