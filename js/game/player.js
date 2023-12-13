@@ -3,11 +3,15 @@ import GameObject from '../engine/gameobject.js';
 import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
 import Input from '../engine/input.js';
-import { Images } from '../engine/resources.js';
+import { Images, AudioFiles } from '../engine/resources.js';
 import Enemy from './enemy.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
 import ParticleSystem from '../engine/particleSystem.js';
+import GameAnimation from '../engine/animator.js';
+import Sounds from '../engine/sound.js';
+
+
 
 // Defining a class Player that extends GameObject
 class Player extends GameObject {
@@ -23,13 +27,19 @@ class Player extends GameObject {
     this.lives = 3;
     this.score = 0;
     this.isOnPlatform = false;
+    this.speed = 10;
     this.isJumping = false;
-    this.jumpForce = 400;
+    this.jumpForce = 7;
     this.jumpTime = 0.3;
     this.jumpTimer = 0;
     this.isInvulnerable = false;
     this.isGamepadMovement = false;
     this.isGamepadJump = false;
+    this.addComponent(new GameAnimation());
+    this.getComponent(GameAnimation).addAnimation([Images.player]);
+    this.getComponent(GameAnimation).addAnimation([Images.playerMove1, Images.playerMove2]);
+    this.addComponent(new Sounds());
+    this.getComponent(Sounds).addSound("Jump", AudioFiles.jump);
   }
 
   // The update function runs every frame and contains game logic
@@ -43,17 +53,17 @@ class Player extends GameObject {
     
     // Handle player movement
     if (!this.isGamepadMovement && input.isKeyDown('ArrowRight')) {
-      physics.velocity.x = 100;
+      physics.velocity.x = this.speed;
       this.direction = -1;
     } else if (!this.isGamepadMovement && input.isKeyDown('ArrowLeft')) {
-      physics.velocity.x = -100;
+      physics.velocity.x = -this.speed;
       this.direction = 1;
     } else if (!this.isGamepadMovement) {
       physics.velocity.x = 0;
     }
 
     // Handle player jumping
-    if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && this.isOnPlatform) {
+    if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && physics.isGrounded) {
       this.startJump();
     }
 
@@ -96,6 +106,19 @@ class Player extends GameObject {
       location.reload();
     }
 
+
+    let anim = this.getComponent(GameAnimation);
+    if(physics.velocity.x == 0){
+      anim.currentAnimation = 0;
+      //0 IS THE IDLE, REFER TO ANIM.CURRENT = 1 FOR MORE CONTEXT
+    }
+    else{
+      anim.currentAnimation = 1;
+      //1 IS THE WALKIN ANIMATION, IF I WANT TO MAKE A JUMP ANIMATION I WILL = 3 AND SO ON, IF I WANT ENEMY THEY HAVE THEIR OWN NUMBERS
+      anim.speed = 2;
+      console.log("Moving working");
+    }
+
     super.update(deltaTime);
   }
 
@@ -136,12 +159,12 @@ class Player extends GameObject {
 
   startJump() {
     // Initiate a jump if the player is on a platform
-    if (this.isOnPlatform) { 
       this.isJumping = true;
       this.jumpTimer = this.jumpTime;
       this.getComponent(Physics).velocity.y = -this.jumpForce;
       this.isOnPlatform = false;
-    }
+
+      this.getComponent(Sounds).playSound("Jump");
   }
   
   updateJump(deltaTime) {

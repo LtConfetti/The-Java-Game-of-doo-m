@@ -6,7 +6,7 @@ import Platform from '../game/platform.js';
 // The Physics class extends Component and handles the physics behavior of a game object.
 class Physics extends Component {
   // The constructor initializes the physics component with optional initial velocity, acceleration, and gravity.
-  constructor(velocity = { x: 0, y: 0 }, acceleration = { x: 0, y: 0 }, gravity = { x: 0, y: 300 }) {
+  constructor(velocity = { x: 0, y: 0 }, acceleration = { x: 0, y: 0 }, gravity = { x: 0, y: 9.807 }) { //Earth reference
     super(); // Call the parent constructor.
     this.velocity = velocity; // Initialize the velocity.
     this.acceleration = acceleration; // Initialize the acceleration.
