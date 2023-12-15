@@ -38,6 +38,7 @@ class Player extends GameObject {
     this.addComponent(new GameAnimation());
     this.getComponent(GameAnimation).addAnimation([Images.player]);
     this.getComponent(GameAnimation).addAnimation([Images.playerMove1, Images.playerMove2]);
+    this.getComponent(GameAnimation).addAnimation([Images.playerMove3]);
     this.addComponent(new Sounds());
     this.getComponent(Sounds).addSound("Jump", AudioFiles.jump);
   }
@@ -108,7 +109,11 @@ class Player extends GameObject {
 
 
     let anim = this.getComponent(GameAnimation);
-    if(physics.velocity.x == 0){
+
+    if (this.isJumping) {
+      anim.currentAnimation = 2; // Assuming playerMove3 represents the jump frame
+      anim.speed = 1;}
+    else if(physics.velocity.x == 0){
       anim.currentAnimation = 0;
       //0 IS THE IDLE, REFER TO ANIM.CURRENT = 1 FOR MORE CONTEXT
     }

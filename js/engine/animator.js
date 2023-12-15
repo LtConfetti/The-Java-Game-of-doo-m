@@ -16,14 +16,15 @@ addAnimation(animation){
     this.gameAnimation.push(animation);
 }
 
-update(deltaTime){
-    this.currentFrame+= deltaTime * this.speed;
-    if(this.currentFrame >= this.gameAnimation[this.currentAnimation].length){
-        this.currentFrame = 0;
+update(deltaTime) {
+    this.currentFrame += deltaTime * this.speed;
+    if (this.currentFrame >= this.gameAnimation[this.currentAnimation].length) {
+      this.currentFrame = 0;
     }
+  
     let renderer = this.gameObject.getComponent(Renderer);
     renderer.image = this.gameAnimation[this.currentAnimation][Math.floor(this.currentFrame)];
-}
+  }
 
 
 }
