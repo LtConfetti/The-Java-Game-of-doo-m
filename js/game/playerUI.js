@@ -14,11 +14,10 @@ class PlayerUI extends GameObject {
 
   // The update method is called every frame.
   update(deltaTime) {
-    // Find the player object in the game's gameObjects array.
     const player = this.game.gameObjects.find((obj) => obj instanceof Player);
 
     // Update the text of the UI component to reflect the player's current lives and score.
-    this.uiComponent.setText(`Lives: ${player.lives} Score: ${player.score}`);
+    this.uiComponent.setText(`Lives: ${player.lives} Score: ${player.score} Jump Amount: ${player.jumpCount}`);
   }
 }
 

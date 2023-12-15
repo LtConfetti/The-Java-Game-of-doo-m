@@ -18,11 +18,18 @@ class Player extends GameObject {
   // Constructor initializes the game object and add necessary components
   constructor(x, y) {
     super(x, y); // Call parent's constructor
-    this.renderer = new Renderer('blue', 50, 50, Images.player); // Add renderer
+ this.renderer = new Renderer('blue', 50, 50, Images.player);
     this.addComponent(this.renderer);
-    this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })); // Add physics
-    this.addComponent(new Input()); // Add input for handling user input
-    // Initialize all the player specific properties
+    this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }));
+    this.addComponent(new Input());
+    this.addComponent(new GameAnimation());
+    this.getComponent(GameAnimation).addAnimation([Images.player]);
+    this.getComponent(GameAnimation).addAnimation([Images.playerMove1, Images.playerMove2]);
+    this.getComponent(GameAnimation).addAnimation([Images.playerJump1, Images.playerJump2, Images.playerJump3, Images.playerJump4, Images.playerJump5, Images.playerJump6, Images.playerJump7, Images.playerJump8, Images.playerJump9, Images.playerJump10,]);
+    this.addComponent(new Sounds());
+    this.getComponent(Sounds).addSound("Jump", AudioFiles.jump);
+
+    // Initialize player-specific properties.
     this.direction = 1;
     this.lives = 3;
     this.score = 0;
@@ -35,12 +42,7 @@ class Player extends GameObject {
     this.isInvulnerable = false;
     this.isGamepadMovement = false;
     this.isGamepadJump = false;
-    this.addComponent(new GameAnimation());
-    this.getComponent(GameAnimation).addAnimation([Images.player]);
-    this.getComponent(GameAnimation).addAnimation([Images.playerMove1, Images.playerMove2]);
-    this.getComponent(GameAnimation).addAnimation([Images.playerMove3]);
-    this.addComponent(new Sounds());
-    this.getComponent(Sounds).addSound("Jump", AudioFiles.jump);
+    this.jumpCount = 5;
   }
 
   // The update function runs every frame and contains game logic
@@ -111,16 +113,16 @@ class Player extends GameObject {
     let anim = this.getComponent(GameAnimation);
 
     if (this.isJumping) {
-      anim.currentAnimation = 2; // Assuming playerMove3 represents the jump frame
-      anim.speed = 1;}
+      anim.currentAnimation = 2; // Assuming playerJump 1-10 represents the jump frames in the array
+      anim.speed = 21;}
     else if(physics.velocity.x == 0){
       anim.currentAnimation = 0;
       //0 IS THE IDLE, REFER TO ANIM.CURRENT = 1 FOR MORE CONTEXT
     }
     else{
       anim.currentAnimation = 1;
-      //1 IS THE WALKIN ANIMATION, IF I WANT TO MAKE A JUMP ANIMATION I WILL = 3 AND SO ON, IF I WANT ENEMY THEY HAVE THEIR OWN NUMBERS
-      anim.speed = 2;
+      //1 IS THE WALKIN ANIMATION, IF I WANT TO MAKE A JUMP ANIMATION I WILL = 2 AND SO ON, IF I WANT ENEMY THEY HAVE THEIR OWN NUMBERS
+      anim.speed = 10;
       console.log("Moving working");
     }
 
@@ -163,13 +165,20 @@ class Player extends GameObject {
   }
 
   startJump() {
-    // Initiate a jump if the player is on a platform
+    if (this.jumpCount > 0) {
       this.isJumping = true;
       this.jumpTimer = this.jumpTime;
-      this.getComponent(Physics).velocity.y = -this.jumpForce;
-      this.isOnPlatform = false;
 
-      this.getComponent(Sounds).playSound("Jump");
+      this.getComponent(Physics).velocity.y -= this.jumpForce;
+
+      this.isOnPlatform = false;
+      this.jumpCount--;
+
+
+    }
+    this.getComponent(GameAnimation).currentAnimation = 2;
+    this.getComponent(GameAnimation).speed = 1;
+    this.getComponent(Sounds).playSound("Jump");
   }
   
   updateJump(deltaTime) {
@@ -178,6 +187,9 @@ class Player extends GameObject {
     if (this.jumpTimer <= 0 || this.getComponent(Physics).velocity.y > 0) {
       this.isJumping = false;
     }
+
+
+
   }
 
   collidedWithEnemy() {
@@ -195,6 +207,7 @@ class Player extends GameObject {
   collect(collectible) {
     // Handle collectible pickup
     this.score += collectible.value;
+    this.jumpCount += collectible.value;
     console.log(`Score: ${this.score}`);
     this.emitCollectParticles(collectible);
   }
@@ -222,6 +235,10 @@ class Player extends GameObject {
     this.lives = 3;
     this.score = 0;
     this.resetPlayerState();
+  }
+
+  getJumpCount() {
+    return this.jumpCount;
   }
 }
 
