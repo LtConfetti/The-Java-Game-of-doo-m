@@ -1,13 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css"> <!-- Link to an external CSS file -->
-    <title>2D Game Engine</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Battle</title>
+  <style>
+    canvas {
+      border: 2px solid #000; /* Adding a border for style */
+      display: none; /* Hiding the canvas by default */
+    }
+  </style>
+  <script>
+    function breakTheLoopGameStart() {
+      // Summon the mighty hidden canvas!
+      const gameCanvas = document.getElementById('gameCanvas');
+      gameCanvas.style.display = 'block';
+    }
+  </script>
 </head>
 <body>
+  <h1>Code Battle</h1>
+  <button onclick="breakTheLoopGameStart()">Break the Loop!</button>
+  <!-- The canvas awaits its grand entrance -->
     <canvas id="gameCanvas"></canvas> <!-- Canvas element with the ID "gameCanvas" -->
     <script type="module" src="js/start.js"></script> <!-- Script tag to include an external JavaScript file -->
+    <p>You have just escaped a While Loop! The Only way to leave the code is to get all the CodeCoins!</p>
 </body>
 </html>

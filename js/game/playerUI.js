@@ -18,6 +18,9 @@ class PlayerUI extends GameObject {
 
     // Update the text of the UI component to reflect the player's current lives and score.
     this.uiComponent.setText(`Lives: ${player.lives} Score: ${player.score} Jump Amount: ${player.jumpCount}`);
+    if (player.death){
+    this.uiComponent.setText(`You are forever stuck in the loop.... You are lost and hopeless....`);
+    }
   }
 }
 

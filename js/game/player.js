@@ -42,6 +42,7 @@ class Player extends GameObject {
     this.isInvulnerable = false;
     this.isGamepadMovement = false;
     this.isGamepadJump = false;
+    this.death = false;
     this.jumpCount = 5;
   }
 
@@ -55,18 +56,19 @@ class Player extends GameObject {
     this.handleGamepadInput(input);
     
     // Handle player movement
-    if (!this.isGamepadMovement && input.isKeyDown('ArrowRight')) {
+    if (!this.death && !this.isGamepadMovement && input.isKeyDown('ArrowRight')) {
       physics.velocity.x = this.speed;
       this.direction = -1;
-    } else if (!this.isGamepadMovement && input.isKeyDown('ArrowLeft')) {
+    } else if (!this.death && !this.isGamepadMovement && input.isKeyDown('ArrowLeft')) {
       physics.velocity.x = -this.speed;
       this.direction = 1;
     } else if (!this.isGamepadMovement) {
       physics.velocity.x = 0;
     }
 
+
     // Handle player jumping
-    if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && physics.isGrounded) {
+    if (!this.death && !this.isGamepadJump && input.isKeyDown('ArrowUp') && physics.isGrounded) {
       this.startJump();
     }
 
@@ -99,8 +101,10 @@ class Player extends GameObject {
     }
 
     // Check if player has no lives left
-    if (this.lives <= 0) {
-      location.reload();
+    //setInterval from https://www.w3schools.com/jsref/met_win_setinterval.asp
+    if (this.lives <= 0 || this.jumpCount == 0) {
+      setInterval(function() {location.reload();}, 5000);
+      this.death = true;
     }
 
     // Check if player has collected all collectibles
@@ -174,11 +178,15 @@ class Player extends GameObject {
       this.isOnPlatform = false;
       this.jumpCount--;
 
-
+      this.getComponent(GameAnimation).currentAnimation = 2;
+      this.getComponent(GameAnimation).speed = 1;
+      this.getComponent(Sounds).playSound("Jump");
     }
-    this.getComponent(GameAnimation).currentAnimation = 2;
-    this.getComponent(GameAnimation).speed = 1;
-    this.getComponent(Sounds).playSound("Jump");
+
+    if(this.jumpCount == 0){
+      this.death = true;
+    }
+
   }
   
   updateJump(deltaTime) {
