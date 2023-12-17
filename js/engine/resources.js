@@ -40,6 +40,8 @@ Images.playerJump8.src = './resources/images/player/playerJump8.png';
 // Set the source of the enemy image.
 Images.enemy.src = './resources/images/enemy/enemy.png'; // Update the image path
 
+Images.collectible.src = './resources/images/Collectibles/collectible.png';
+
 
 
 // Export the Images and AudioFiles objects so they can be imported and used in other modules.
