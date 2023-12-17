@@ -15,12 +15,17 @@ const Images = {
   enemy: new Image(), // The Image instance for the enemy.
 
   collectible: new Image('./resources/images/Collectibles/collectible.png'),
+  collectible2: new Image('./resources/images/Collectibles/collectible2.png'),
 };
 
 // Create an AudioFiles object to hold the file paths of the audio resources.
 const AudioFiles = {
+  gameOver: new Audio('./resources/audio/gameEnd.wav'),
+  collect: new Audio('./resources/audio/collect.wav'),
+  collectJump: new Audio('./resources/audio/collectJ.wav'),
+  collectHealth: new Audio('./resources/audio/collectH.wav'),
   jump: new Audio('./resources/audio/jump.wav'), // The file path of the jump sound.
-  bgm: new Audio('./resources/audio/bgm.mp3'),
+  hurt: new Audio('./resources/audio/hurt.wav'),
   // Add more audio file paths as needed
 };
 
@@ -41,6 +46,7 @@ Images.playerJump8.src = './resources/images/player/playerJump8.png';
 Images.enemy.src = './resources/images/enemy/enemy.png'; // Update the image path
 
 Images.collectible.src = './resources/images/Collectibles/collectible.png';
+Images.collectible2.src = './resources/images/Collectibles/collectible2.png';
 
 
 

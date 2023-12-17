@@ -15,40 +15,71 @@ class Physics extends Component {
 
   // The update method handles how the component's state changes over time.
   update(deltaTime) {
+    this.updateVelocity(deltaTime);
+    this.handleVerticalCollisions();
+    this.handleHorizontalCollisions();
+}
+
+updateVelocity(deltaTime) {
     // Update velocity based on acceleration and gravity.
     this.velocity.x += this.acceleration.x * deltaTime;
     this.velocity.y += (this.acceleration.y + this.gravity.y) * deltaTime;
-    // Move the game object based on the velocity.
-    const platforms = this.gameObject.game.gameObjects.filter((obj) => obj instanceof Platform);
-    this.isGrounded = false;
-    for(let i=0; i<Math.abs(this.velocity.y); i++){
-      this.gameObject.y+=Math.sign(this.velocity.y);
-      for(const obj of platforms){
-        if(obj.getComponent(Physics).isColliding(this)){
-            if(this.velocity.y<0){
-              this.gameObject.y+=1;
-              this.velocity.y=0; 
-              this.velocity.y=+1; 
-            } 
-            else if(this.velocity.y>=0){
-              this.gameObject.y-=1;
-              this.isGrounded = true;
-              this.velocity.y=0;
-            }
-        }
-      }
-    }
+}
 
-    for(let i=0; i<Math.abs(this.velocity.x); i++){
-      this.gameObject.x+=Math.sign(this.velocity.x);
-      for(const obj of platforms){
-           if(obj.getComponent(Physics).isColliding(this)){
-            this.gameObject.x-=Math.sign(this.velocity.x);
-            this.velocity.x = 0;
-           }
+handleVerticalCollisions() {
+    const platforms = this.getPlatforms();
+    this.isGrounded = false;
+
+    for(let i = 0; i < Math.abs(this.velocity.y); i++) {
+        this.gameObject.y += Math.sign(this.velocity.y);
+        this.checkVerticalCollisionWithPlatforms(platforms);
+    }
+}
+
+handleHorizontalCollisions() {
+    const platforms = this.getPlatforms();
+
+    for(let i = 0; i < Math.abs(this.velocity.x); i++) {
+        this.gameObject.x += Math.sign(this.velocity.x);
+        this.checkHorizontalCollisionWithPlatforms(platforms);
+    }
+}
+
+getPlatforms() {
+    return this.gameObject.game.gameObjects.filter((obj) => obj instanceof Platform);
+}
+
+checkVerticalCollisionWithPlatforms(platforms) {
+    for(const platform of platforms) {
+        if(platform.getComponent(Physics).isColliding(this)) {
+            this.handleVerticalCollision();
         }
     }
-  }
+}
+
+checkHorizontalCollisionWithPlatforms(platforms) {
+    for(const platform of platforms) {
+        if(platform.getComponent(Physics).isColliding(this)) {
+            this.handleHorizontalCollision();
+        }
+    }
+}
+
+handleVerticalCollision() {
+    if(this.velocity.y < 0) {
+        this.gameObject.y += 1;
+        this.velocity.y = 1; 
+    } else if(this.velocity.y >= 0) {
+        this.gameObject.y -= 1;
+        this.isGrounded = true;
+        this.velocity.y = 0;
+    }
+}
+
+handleHorizontalCollision() {
+    this.gameObject.x -= Math.sign(this.velocity.x);
+    this.velocity.x = 0;
+}
 
   // The isColliding method checks if this game object is colliding with another game object.
   isColliding(otherPhysics) {

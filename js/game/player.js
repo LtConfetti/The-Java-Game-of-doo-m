@@ -28,6 +28,11 @@ class Player extends GameObject {
     this.getComponent(GameAnimation).addAnimation([Images.playerJump1, Images.playerJump2, Images.playerJump3, Images.playerJump4, Images.playerJump5, Images.playerJump6, Images.playerJump7, Images.playerJump8, Images.playerJump9, Images.playerJump10,]);
     this.addComponent(new Sounds());
     this.getComponent(Sounds).addSound("Jump", AudioFiles.jump);
+    this.getComponent(Sounds).addSound("CollectJ", AudioFiles.collectJump);
+    this.getComponent(Sounds).addSound("CollectH", AudioFiles.collectHealth);
+    this.getComponent(Sounds).addSound("Game End", AudioFiles.gameOver);
+    this.getComponent(Sounds).addSound("Collect", AudioFiles.collect);
+    this.getComponent(Sounds).addSound("Hurt", AudioFiles.hurt);
 
     // Initialize player-specific properties.
     this.direction = 1;
@@ -40,8 +45,6 @@ class Player extends GameObject {
     this.jumpTime = 0.3;
     this.jumpTimer = 0;
     this.isInvulnerable = false;
-    this.isGamepadMovement = false;
-    this.isGamepadJump = false;
     this.death = false;
     this.jumpCount = 5;
   }
@@ -51,24 +54,22 @@ class Player extends GameObject {
     const physics = this.getComponent(Physics); // Get physics component
     const input = this.getComponent(Input); // Get input component
 
-    console.log("peen");
 
-    this.handleGamepadInput(input);
     
     // Handle player movement
-    if (!this.death && !this.isGamepadMovement && input.isKeyDown('ArrowRight')) {
+    if (!this.death && input.isKeyDown('ArrowRight')) {
       physics.velocity.x = this.speed;
       this.direction = -1;
-    } else if (!this.death && !this.isGamepadMovement && input.isKeyDown('ArrowLeft')) {
+    } else if (!this.death && input.isKeyDown('ArrowLeft')) {
       physics.velocity.x = -this.speed;
       this.direction = 1;
-    } else if (!this.isGamepadMovement) {
+    } else {
       physics.velocity.x = 0;
     }
 
 
     // Handle player jumping
-    if (!this.death && !this.isGamepadJump && input.isKeyDown('ArrowUp') && physics.isGrounded) {
+    if (!this.death && input.isKeyDown('ArrowUp') && physics.isGrounded) {
       this.startJump();
     }
 
@@ -103,12 +104,13 @@ class Player extends GameObject {
     // Check if player has no lives left
     //setInterval from https://www.w3schools.com/jsref/met_win_setinterval.asp
     if (this.lives <= 0 || this.jumpCount == 0) {
+      this.getComponent(Sounds).playSound("Game End");
       setInterval(function() {location.reload();}, 5000);
       this.death = true;
     }
 
     // Check if player has collected all collectibles
-    if (this.score >= 3) {
+    if (this.score == 1) {
       console.log('You win!');
       location.reload();
     }
@@ -133,40 +135,6 @@ class Player extends GameObject {
     super.update(deltaTime);
   }
 
-  handleGamepadInput(input){
-    const gamepad = input.getGamepad(); // Get the gamepad input
-    const physics = this.getComponent(Physics); // Get physics component
-    if (gamepad) {
-      // Reset the gamepad flags
-      this.isGamepadMovement = false;
-      this.isGamepadJump = false;
-
-      // Handle movement
-      const horizontalAxis = gamepad.axes[0];
-      // Move right
-      if (horizontalAxis > 0.1) {
-        this.isGamepadMovement = true;
-        physics.velocity.x = 100;
-        this.direction = -1;
-      } 
-      // Move left
-      else if (horizontalAxis < -0.1) {
-        this.isGamepadMovement = true;
-        physics.velocity.x = -100;
-        this.direction = 1;
-      } 
-      // Stop
-      else {
-        physics.velocity.x = 0;
-      }
-      
-      // Handle jump, using gamepad button 0 (typically the 'A' button on most gamepads)
-      if (input.isGamepadButtonDown(0) && this.isOnPlatform) {
-        this.isGamepadJump = true;
-        this.startJump();
-      }
-    }
-  }
 
   startJump() {
     if (this.jumpCount > 0) {
@@ -203,6 +171,7 @@ class Player extends GameObject {
   collidedWithEnemy() {
     // Checks collision with an enemy and reduce player's life if not invulnerable
     if (!this.isInvulnerable) {
+      this.getComponent(Sounds).playSound("Hurt");
       this.lives--;
       this.isInvulnerable = true;
       // Make player vulnerable again after 2 seconds
@@ -213,12 +182,28 @@ class Player extends GameObject {
   }
 
   collect(collectible) {
-    // Handle collectible pickup
-    this.score += collectible.value;
-    this.jumpCount += collectible.value;
-    console.log(`Score: ${this.score}`);
-    this.emitCollectParticles(collectible);
+      // Handle collectible pickup
+      if (collectible.tag === 'collectible') {
+          this.score += collectible.value;
+          this.emitCollectParticles(collectible);
+          this.getComponent(Sounds).playSound("Collect");
+      } else if (collectible.tag === 'health') {
+          // Handle collectible pickup
+          this.lives += collectible.value;
+          setTimeout(() => {
+            this.getComponent(Sounds).playSound("CollectH");
+          }, 1500);
+      }
+     else if (collectible.tag === 'jump') {
+      // Handle collectible pickup
+      this.jumpCount += collectible.value;
+      setTimeout(() => {
+        this.getComponent(Sounds).playSound("CollectJ");
+      }, 1500);
+     }
   }
+
+
 
   emitCollectParticles() {
     // Create a particle system at the player's position when a collectible is collected
