@@ -22,11 +22,9 @@ class Particle extends GameObject {
     // Decrease the duration by the amount of time that has passed since the last frame.
     this.duration -= deltaTime;
 
-    // If the duration has run out...
-    if (this.duration <= 0) {
-      // Remove this particle from the game.
+    if(this.duration <= 0){
       this.game.removeGameObject(this);
-    }
+  }
 
     // Call the update method of the parent class (GameObject), which will update all of the particle's components.
     super.update(deltaTime);

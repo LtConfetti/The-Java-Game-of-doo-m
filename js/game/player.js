@@ -4,7 +4,6 @@ import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
 import Input from '../engine/input.js';
 import { Images, AudioFiles } from '../engine/resources.js';
-import Enemy from './enemy.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
 import ParticleSystem from '../engine/particleSystem.js';
@@ -36,7 +35,7 @@ class Player extends GameObject {
 
     // Initialize player-specific properties.
     this.direction = 1;
-    this.lives = 3;
+    this.lives = 1;
     this.score = 0;
     this.isOnPlatform = false;
     this.speed = 10;
@@ -85,14 +84,7 @@ class Player extends GameObject {
         this.game.removeGameObject(collectible);
       }
     }
-  
-    // Handle collisions with enemies
-    const enemies = this.game.gameObjects.filter((obj) => obj instanceof Enemy);
-    for (const enemy of enemies) {
-      if (physics.isColliding(enemy.getComponent(Physics))) {
-        this.collidedWithEnemy();
-      }
-    }
+
   
 
   
@@ -112,7 +104,8 @@ class Player extends GameObject {
     // Check if player has collected all collectibles
     if (this.score == 1) {
       console.log('You win!');
-      location.reload();
+      this.getComponent(Sounds).playSound("Collect");
+      setInterval(function() {location.reload();}, 1000);
     }
 
 
@@ -127,7 +120,7 @@ class Player extends GameObject {
     }
     else{
       anim.currentAnimation = 1;
-      //1 IS THE WALKIN ANIMATION, IF I WANT TO MAKE A JUMP ANIMATION I WILL = 2 AND SO ON, IF I WANT ENEMY THEY HAVE THEIR OWN NUMBERS
+      //1 IS THE WALKIN ANIMATION, IF I WANT TO MAKE A JUMP ANIMATION I WILL = 2 AND SO ON
       anim.speed = 10;
       console.log("Moving working");
     }
@@ -168,28 +161,17 @@ class Player extends GameObject {
 
   }
 
-  collidedWithEnemy() {
-    // Checks collision with an enemy and reduce player's life if not invulnerable
-    if (!this.isInvulnerable) {
-      this.getComponent(Sounds).playSound("Hurt");
-      this.lives--;
-      this.isInvulnerable = true;
-      // Make player vulnerable again after 2 seconds
-      setTimeout(() => {
-        this.isInvulnerable = false;
-      }, 2000);
-    }
-  }
 
   collect(collectible) {
       // Handle collectible pickup
       if (collectible.tag === 'collectible') {
           this.score += collectible.value;
           this.emitCollectParticles(collectible);
-          this.getComponent(Sounds).playSound("Collect");
       } else if (collectible.tag === 'health') {
           // Handle collectible pickup
           this.lives += collectible.value;
+          this.speed += collectible.value;
+          this.emitCollectParticles(collectible);
           setTimeout(() => {
             this.getComponent(Sounds).playSound("CollectH");
           }, 1500);
@@ -197,6 +179,8 @@ class Player extends GameObject {
      else if (collectible.tag === 'jump') {
       // Handle collectible pickup
       this.jumpCount += collectible.value;
+      this.jumpForce += collectible.value;
+      this.emitCollectParticles(collectible);
       setTimeout(() => {
         this.getComponent(Sounds).playSound("CollectJ");
       }, 1500);
@@ -207,7 +191,7 @@ class Player extends GameObject {
 
   emitCollectParticles() {
     // Create a particle system at the player's position when a collectible is collected
-    const particleSystem = new ParticleSystem(this.x, this.y, 'yellow', 20, 1, 0.5);
+    const particleSystem = new ParticleSystem(this.x, this.y, 'black', 20, 1, 0.5);
     this.game.addGameObject(particleSystem);
   }
 
@@ -225,7 +209,7 @@ class Player extends GameObject {
 
   resetGame() {
     // Reset the game state, which includes the player's state
-    this.lives = 3;
+    this.lives = 1;
     this.score = 0;
     this.resetPlayerState();
   }

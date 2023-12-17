@@ -1,4 +1,4 @@
-// Create an Images object to hold the Image instances for the player and the enemy.
+// Create an Images object to hold the Image instances for the player .
 const Images = {
   player: new Image(), // The Image instance for the player.
   playerMove1: new Image(),
@@ -11,8 +11,11 @@ const Images = {
   playerJump6: new Image(),
   playerJump7: new Image(),
   playerJump8: new Image(),
-
-  enemy: new Image(), // The Image instance for the enemy.
+  
+  platform: new Image(),
+  platform2: new Image(),
+  platform3: new Image(),
+  
 
   collectible: new Image('./resources/images/Collectibles/collectible.png'),
   collectible2: new Image('./resources/images/Collectibles/collectible2.png'),
@@ -42,11 +45,13 @@ Images.playerJump6.src = './resources/images/player/playerJump6.png';
 Images.playerJump7.src = './resources/images/player/playerJump7.png';
 Images.playerJump8.src = './resources/images/player/playerJump8.png';
 
-// Set the source of the enemy image.
-Images.enemy.src = './resources/images/enemy/enemy.png'; // Update the image path
+Images.platform.src = './resources/images/platform/platform.png';
+Images.platform2.src = './resources/images/platform/platform2.png';
+Images.platform3.src = './resources/images/platform/platform3.png';
 
 Images.collectible.src = './resources/images/Collectibles/collectible.png';
 Images.collectible2.src = './resources/images/Collectibles/collectible2.png';
+
 
 
 

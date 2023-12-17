@@ -16,6 +16,7 @@ addAnimation(animation){
     this.gameAnimation.push(animation);
 }
 
+
 update(deltaTime) {
     this.currentFrame += deltaTime * this.speed;
     if (this.currentFrame >= this.gameAnimation[this.currentAnimation].length) {

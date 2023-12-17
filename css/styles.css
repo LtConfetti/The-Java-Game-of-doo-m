@@ -1,15 +1,9 @@
 /* Set margin, flex properties, height, and background color for the body */
-body {
-    animation: bg 20s infinite;
-  }
-/* from https://stackoverflow.com/questions/24363205/css-background-color-keyframes-animation*/
-  @keyframes bg {
-    0% { background-color: #ff8888; }
-    25% { background-color: #89ff89; }
-    50% { background-color: #88e7ff; }
-    75% { background-color: #ffff88; }
-    100% { background-color: #ff89ff; }
-  }
+body{
+    justify-content: center;
+    background-color: #1f1f1f;
+
+}
 
 
 canvas {

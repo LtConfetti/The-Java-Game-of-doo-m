@@ -12,7 +12,7 @@ class Physics extends Component {
     this.acceleration = acceleration; // Initialize the acceleration.
     this.gravity = gravity; // Initialize the gravity.
   }
-
+  //physics majority made by copilot
   // The update method handles how the component's state changes over time.
   update(deltaTime) {
     this.updateVelocity(deltaTime);
